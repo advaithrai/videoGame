@@ -1,0 +1,11 @@
+2d Beat em' Up video game using Phaser, interactive demo
+
+Current functionality:
+
+1. Character is moved using left,right, up, down arrows
+2. Animations are enabled
+3. If character walks to the right of scene 1, it is transported to scene 2
+4. Similarly, if the character walks to the left of scene 2, it is transported to scene 1
+5. Game uses Phaser arcade physics
+6. Game counts the amount of frames the character moves in the upper right corner
+7. This value is stored and persists across both states
