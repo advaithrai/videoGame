@@ -1,9 +1,9 @@
-var hiya = {}, centerX = 1500 / 2, centerY = 1000 / 2, bruce, speed = 7;
+var hiya = {}, centerX = 1500 / 2, centerY = 1000 / 2, bruce, speed = 7, score = 0;
 hiya.actionstate = function() {};
 hiya.actionstate.prototype = {
     
     preload: function(){
-        game.load.image('bruce', 'assets/sprites/Dragon_1.png');
+        game.load.spritesheet('bruce', 'assets/spritesheets/brucewalk.png', 320, 320);
         game.load.image('background', 'assets/backgrounds/dojo.png');
         
     },
@@ -21,23 +21,52 @@ hiya.actionstate.prototype = {
         bruce.scale.setTo(1.25,1.25);
         game.physics.enable(bruce);
         bruce.body.collideWorldBounds = true;
+        bruce.animations.add('walk', [0,1,2,3]);
         
+        game.add.text(1300,80, 'Steps: ' + score, {fontSize: 500, fill:'#DA420A'});
+        
+
        
        
         
     },
     update: function(){
+        
+        
         if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
             bruce.x += speed;
+            score += 1;
             bruce.scale.setTo(1.25,1.25);
+            bruce.animations.play('walk', 14, true);
+            if (bruce.x > 1300) {
+                game.state.start('victorystate');
+            }
         }
         else if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
             bruce.x -= speed;
+            score += 1;
             bruce.scale.setTo(-1.25,1.25);
+            bruce.animations.play('walk', 14, true);
         }
         else if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-            bruce.y -= 1;
+            bruce.y -= speed;
+            score += 1;
+            if (bruce.y < 360) {
+                bruce.y = 360;
+                bruce.animations.play('walk', 14,true);
+            }
             
+            
+        }
+        else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+            bruce.y += speed;
+            score += 1;
+            bruce.animations.play('walk', 14, true);
+            
+        }
+        else {
+            bruce.animations.stop('walk');
+            bruce.frame = 0;
         }
     }
     
