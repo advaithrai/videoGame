@@ -1,4 +1,6 @@
-var hiya = {}, centerX = 1500 / 2, centerY = 1000 / 2, centerX_1 = 1500, centerY_1 = 1000 / 2,  bruce, masterone, platform,  speed = 7, score = 0, h_health = 100, e_health = 100, master_left = true;
+var hiya = {}, centerX = 1500 / 2, centerY = 1000 / 2, centerX_1 = 1500, centerY_1 = 1000 / 2,  bruce, masterone, platform, b_music, v_music,   speed = 7, score = 0, h_health = 100, e_health = 100, master_left = true;
+
+
 hiya.actionstate = function() {};
 hiya.actionstate.prototype = {
     
@@ -7,6 +9,7 @@ hiya.actionstate.prototype = {
         game.load.spritesheet('masterone', 'assets/spritesheets/masterone.png', 320, 320)
         game.load.image('background', 'assets/backgrounds/dojo.png');
         game.load.image('platform', 'assets/backgrounds/platform.png');
+        game.load.audio('b_music', 'assets/sounds/b.mp3')
         
     },
     create: function() {
@@ -15,6 +18,8 @@ hiya.actionstate.prototype = {
         game.stage.backgroundColor = '#6D6214';
         game.input.keyboard.addKey(Phaser.Keyboard.ONE).onDown.add(changeState, null, null, 'victory');
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        
+        
         
         var background = game.add.sprite(0,0, 'background');
         platform = game.add.sprite(0,340, 'platform');
@@ -60,7 +65,10 @@ hiya.actionstate.prototype = {
         
         game.physics.arcade.collide(bruce,[platform, masterone]);
         
-    
+        //MUSIC
+        audioVariable = game.sound.add('b_music');
+        audioVariable.play();
+        
         
         if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
             bruce.x += speed;
