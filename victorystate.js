@@ -2,8 +2,10 @@ hiya.victorystate = function() {};
 hiya.victorystate.prototype = {
     
     preload: function(){
-                game.load.spritesheet('bruce', 'assets/spritesheets/brucewalk.png', 320, 320);
+        game.load.spritesheet('bruce', 'assets/spritesheets/brucewalk.png', 320, 320);
         game.load.image('outside', 'assets/backgrounds/outside.png');
+        game.load.audio("v_music","assets/sounds/v.mp3")
+        
     },
     create: function() {
         game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -25,7 +27,14 @@ hiya.victorystate.prototype = {
         
     },
     update: function(){
-                if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+        
+
+        //MUSIC
+        audioVariable_v = game.sound.add('v_music');
+        audioVariable_v.play();
+        
+        
+        if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
             bruce.x += speed;
             score += 1;
             bruce.scale.setTo(1.25,1.25);
