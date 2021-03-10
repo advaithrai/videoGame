@@ -1,4 +1,4 @@
-var hiya = {}, centerX = 1500 / 2, centerY = 1000 / 2, centerX_1 = 1500, centerY_1 = 1000 / 2,  bruce, masterone, platform, b_music, v_music,   speed = 7, score = 0, h_health = 100, e_health = 100, master_left = true;
+var hiya = {}, centerX = 1500 / 2, centerY = 1000 / 2, centerX_1 = 1500, centerY_1 = 1000 / 2,  bruce, masterone, platform, b_music, v_music,   speed = 7, score = 0, h_health = 100, e_health = 100, master_left = true, in_action= false, masterScore;
 
 
 hiya.actionstate = function() {};
@@ -47,14 +47,14 @@ hiya.actionstate.prototype = {
         masterone.body.collideWorldBounds = true;
         masterone.animations.add('walk', [0,1,2,3,4,5,6,7,8,9,10,11,12]);
         masterone.animations.add('block', [13,14,15,16,17]);
-        
+        masterone.animations.add('surprise', [18,19,20,21]);
         
         
         platform.body.immovable = true;
         
         //game.add.text(1300,80, 'Steps: ' + score, {fontSize: 500, fill:'#DA420A'});
         game.add.text(100,10, 'Your Health: ' + h_health, {fontSize: 500, fill:'#DA420A'});
-        game.add.text(1200,10, 'Master one Health: ' + e_health, {fontSize: 500, fill:'#DA420A'});
+        masterScore = game.add.text(1200,10, 'Master one Health: ' + e_health, {fontSize: 500, fill:'#DA420A'});
  
 
        
@@ -63,7 +63,9 @@ hiya.actionstate.prototype = {
     },
     update: function(){
         
-        game.physics.arcade.collide(bruce,[platform, masterone]);
+        game.physics.arcade.collide(bruce,platform);
+        
+        game.physics.arcade.overlap(bruce, masterone, touchEnemy, null, this);
         
         //MUSIC
         audioVariable = game.sound.add('b_music');
@@ -75,7 +77,7 @@ hiya.actionstate.prototype = {
             score += 1;
             bruce.scale.setTo(1.25,1.25);
             bruce.animations.play('walk', 14, true);
-            if (bruce.x > 1300) {
+            if (bruce.x > 1300 && e_health <= 0) {
                 game.state.start('victorystate');
             }
         }
@@ -99,9 +101,19 @@ hiya.actionstate.prototype = {
         
         
         else if (game.input.keyboard.isDown(Phaser.Keyboard.A)) {
-            bruce.animations.play('kick', 14, false);        }
+            
+            bruce.animations.play('kick', 14, false)
+            in_action = true;
+            masterScore.destroy();
+            masterScore = game.add.text(1200,10, 'Master one Health: ' + e_health, {fontSize: 500, fill:'#DA420A'});
+            ;        }
         else if (game.input.keyboard.isDown(Phaser.Keyboard.S)) {
+            
             bruce.animations.play('punch', 14, false);
+            in_action = true;
+            masterScore.destroy();
+            masterScore = game.add.text(1200,10, 'Master one Health: ' + e_health, {fontSize: 500, fill:'#DA420A'});
+ 
         }
         
         
@@ -118,6 +130,7 @@ hiya.actionstate.prototype = {
         else {
             bruce.animations.stop('walk');
             bruce.frame = 0;
+            in_action = false;
         }
 
         
@@ -148,10 +161,11 @@ hiya.actionstate.prototype = {
         if (masterone.x == 600) {
             masterone.animations.play('block', 30, false);
             masterone.frame = 0;
+            in_action = false;
         }
         
         
-       
+        
         
         
     }
@@ -165,4 +179,13 @@ function changeState(i, state) {
     console.log(state);
     game.state.start(stateName);
     
+}
+
+function touchEnemy(player, enemy) {
+    if (in_action == true) {
+        e_health -= 10;
+    }
+enemy.x *= -1;
+//
+// can add other code - damage player, etc.
 }
