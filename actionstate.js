@@ -1,4 +1,4 @@
-var hiya = {}, centerX = 1500 / 2, centerY = 1000 / 2, centerX_1 = 1500, centerY_1 = 1000 / 2,  bruce, masterone, platform, b_music, v_music,   speed = 7, score = 0, h_health = 100, e_health = 100, master_left = true, in_action= false, masterScore;
+var hiya = {}, centerX = 1500 / 2, centerY = 1000 / 2, centerX_1 = 1500, centerY_1 = 1000 / 2,  bruce, masterone, platform, b_music, v_music,   speed = 7, score = 0, h_health = 100, e_health = 100, master_left = true, in_action = false, masterScore, blocked = false;
 
 
 hiya.actionstate = function() {};
@@ -44,10 +44,12 @@ hiya.actionstate.prototype = {
         masterone.anchor.setTo(0.5,0.1);
         masterone.scale.setTo(1.25,1.25);
         game.physics.enable(masterone);
+        masterone.body.gravity.y = 1000;
         masterone.body.collideWorldBounds = true;
         masterone.animations.add('walk', [0,1,2,3,4,5,6,7,8,9,10,11,12]);
         masterone.animations.add('block', [13,14,15,16,17]);
         masterone.animations.add('surprise', [18,19,20,21]);
+        masterone.animations.add('die', [22,23,24,25]);
         
         
         platform.body.immovable = true;
@@ -102,14 +104,14 @@ hiya.actionstate.prototype = {
         
         else if (game.input.keyboard.isDown(Phaser.Keyboard.A)) {
             
-            bruce.animations.play('kick', 14, false)
+            bruce.animations.play('kick', 24, false)
             in_action = true;
             masterScore.destroy();
             masterScore = game.add.text(1200,10, 'Master one Health: ' + e_health, {fontSize: 500, fill:'#DA420A'});
             ;        }
         else if (game.input.keyboard.isDown(Phaser.Keyboard.S)) {
             
-            bruce.animations.play('punch', 14, false);
+            bruce.animations.play('punch', 24, false);
             in_action = true;
             masterScore.destroy();
             masterScore = game.add.text(1200,10, 'Master one Health: ' + e_health, {fontSize: 500, fill:'#DA420A'});
@@ -135,7 +137,8 @@ hiya.actionstate.prototype = {
 
         
         
-        //Code what masterone has to do       
+        //Code what masterone has to do
+        if (e_health > 0) {
         
         if (masterone.x < 500) {
             master_left = false;
@@ -160,12 +163,21 @@ hiya.actionstate.prototype = {
         } 
         if (masterone.x == 600) {
             masterone.animations.play('block', 30, false);
+            in_action = false;  
             masterone.frame = 0;
-            in_action = false;
+
         }
         
         
+        }
         
+        else if (e_health <= 0) {
+            masterone.animations.play('die', 14, false);
+            masterone.x = masterone.x;
+            masterone.frame = 23;
+            in_action = false;
+            masterone.body.immovable = true;
+        }
         
         
     }
@@ -182,10 +194,9 @@ function changeState(i, state) {
 }
 
 function touchEnemy(player, enemy) {
-    if (in_action == true) {
+    if (in_action == true && e_health > 0) {
         e_health -= 10;
     }
 enemy.x *= -1;
-//
-// can add other code - damage player, etc.
+
 }

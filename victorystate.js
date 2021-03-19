@@ -2,8 +2,8 @@ hiya.victorystate = function() {};
 hiya.victorystate.prototype = {
     
     preload: function(){
-        game.load.spritesheet('bruce', 'assets/spritesheets/brucewalk.png', 320, 320);
-        game.load.image('outside', 'assets/backgrounds/outside.png');
+        game.load.spritesheet('bruce', 'assets/spritesheets/brucefull.png', 320, 320);
+        game.load.image('outside', 'assets/backgrounds/forest_2.png');
         game.load.audio("v_music","assets/sounds/v.mp3")
         
     },
