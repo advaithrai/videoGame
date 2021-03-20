@@ -1,5 +1,7 @@
 var hiya = {}, centerX = 1500 / 2, centerY = 1000 / 2, centerX_1 = 1500, centerY_1 = 1000 / 2,  bruce, masterone, platform, b_music, v_music,   speed = 7, score = 0, h_health = 100, e_health = 100, master_left = true, in_action = false, masterScore, blocked = false;
 
+var counter = 0;
+var text = 0;
 
 hiya.actionstate = function() {};
 hiya.actionstate.prototype = {
@@ -9,6 +11,7 @@ hiya.actionstate.prototype = {
         game.load.spritesheet('masterone', 'assets/spritesheets/masterone.png', 320, 320)
         game.load.image('background', 'assets/backgrounds/dojo.png');
         game.load.image('platform', 'assets/backgrounds/platform.png');
+        game.load.image('end', 'assets/backgrounds/end.png');
         game.load.audio('b_music', 'assets/sounds/b.mp3')
         
     },
@@ -57,6 +60,12 @@ hiya.actionstate.prototype = {
         //game.add.text(1300,80, 'Steps: ' + score, {fontSize: 500, fill:'#DA420A'});
         game.add.text(100,10, 'Your Health: ' + h_health, {fontSize: 500, fill:'#DA420A'});
         masterScore = game.add.text(1200,10, 'Master one Health: ' + e_health, {fontSize: 500, fill:'#DA420A'});
+        
+        //Timer
+        text = game.add.text(centerX, 30, 'Time Left: 0', { font: "64px Arial", fill: "#ffffff", align: "center" });
+        text.anchor.setTo(0.5, 0.5);
+        game.time.events.loop(Phaser.Timer.SECOND, updateCounter, this);
+
  
 
        
@@ -67,11 +76,31 @@ hiya.actionstate.prototype = {
         
         game.physics.arcade.collide(bruce,platform);
         
+
+        
         game.physics.arcade.overlap(bruce, masterone, touchEnemy, null, this);
         
         //MUSIC
         audioVariable = game.sound.add('b_music');
         audioVariable.play();
+        
+    
+        //TIMER
+        //game.setText('Event.progress: ' + timedEvent.getProgress().toString().substr(0, 4));
+        //game.debug.text("Time until event: " + game.time.events.duration.toFixed(0), 32, 32);
+        counter++;
+        var num = 3000 - counter;
+
+
+        text.setText('Time Left: ' +  parseInt(num/100) + ' seconds');
+        
+        if (num <= 0) {
+            var end = game.add.sprite(0,0, 'end');
+
+        }
+        
+        
+        
         
         
         if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
@@ -171,12 +200,23 @@ hiya.actionstate.prototype = {
         
         }
         
+        // this is when the master dies 
         else if (e_health <= 0) {
             masterone.animations.play('die', 14, false);
             masterone.x = masterone.x;
             masterone.frame = 23;
             in_action = false;
             masterone.body.immovable = true;
+
+        }
+        
+        
+        //this is when hiya has 0 health
+        //shows the end credits
+        //should it be < 0?
+        //ENDD SCENE
+        else if (h_health <= 0){
+            var end = game.add.sprite(0,0, 'end');
         }
         
         
